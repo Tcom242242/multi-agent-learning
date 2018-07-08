@@ -1,24 +1,12 @@
-# from games.game import Game
-# from game import Game
-# from envs.bdp_env import BDPEnv
-# from envs.rrsp_env import RRSPEnv
-import sys
 import os, sys
 sys.path.append(os.getcwd())
 from games.game import Game
-import time
 from tqdm import tqdm
 import numpy as np
-import ipdb
-import math
-import random
-from agents.phc_agent import PHCAgent
-from agents.policy import NormalPolicy
-
 
 class SimpleGame(Game):
     """
-        シンプルなゲーム理論で扱えるゲームを強化学習でやってみる 
+        シンプルなmatrix gameを強化学習でやってみる
     """
     def __init__(self, nb_eps=1, nb_steps=10000,agents=None):
         self.agents = agents
@@ -44,9 +32,7 @@ class SimpleGame(Game):
                 self.agents[1].get_reward(r1)
 
         social_rewards = np.array(social_rewards)
-        print(np.mean(social_rewards))
-        # print("E:E0={}, E1={}".format(self.agents[0].q_values, self.agents[1].q_values))
-        return None
+        return {"social_rewards":social_rewards}
 
 
     def _create_reward_table(self):
