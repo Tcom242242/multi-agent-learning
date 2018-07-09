@@ -16,20 +16,12 @@ class NormalPolicy(Policy):
     def __init__(self):
         super(NormalPolicy, self).__init__()
 
-    ## @todo ボルツマン分布などで正規化
     def select_action(self, pi):
-        new_pi = []
-        sum_e = np.sum([np.exp(p) for p in pi ])
-        for idx, p in enumerate(pi):
-            new_pi.append((np.exp(p)/sum_e))
-
-        new_pi.sort()
-        print(new_pi)
         randm = np.random.rand()
         sum_p = 0.0
-        for idx, p in enumerate(new_pi):
+        for idx, p in enumerate(pi):
             sum_p += p
-            if randm < sum_p:
+            if randm <= sum_p:
                 action = idx
                 break
         return action

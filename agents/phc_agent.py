@@ -12,7 +12,7 @@ class Agent(metaclass=ABCMeta):
         """
         self.alpha = alpha
         self.policy = policy
-        self.reward_history = []
+        self.rewards = []
 
     @abstractmethod
     def act(self):
@@ -28,18 +28,14 @@ class PHCAgent(Agent):
         Policy hill-climbing algorithm(PHC)
         http://www.cs.cmu.edu/~mmv/papers/01ijcai-mike.pdf
     """
-    def __init__(self, delta=0.1,  action_list=None, **kwargs):
-        """
-        :param action_list:
-        :param q_values:
-        :param kwargs:
-        """
+    def __init__(self, delta=0.0001, action_list=None, **kwargs):
         super().__init__(**kwargs)
         self.action_list = action_list  # 選択肢
         self.last_action_id = None
         self.q_values = self._init_q_values()   # 期待報酬値の初期化
         self.pi = [(1.0/len(action_list)) for idx in range(len(action_list))]
         self.delta = delta
+        self.pi_history = [self.pi[0]]
 
     def _init_q_values(self):
         q_values = {}
@@ -53,19 +49,22 @@ class PHCAgent(Agent):
         return action
 
     def get_reward(self, reward):
-        self.reward_history.append(reward)
+        self.rewards.append(reward)
         self.q_values[self.last_action_id] = self._update_q_value(reward)   # 期待報酬値の更新
-        self.pi[self.last_action_id] = self._update_pi()
+        self._update_pi()
 
     def _update_q_value(self, reward):
         return ((1.0 - self.alpha) * self.q_values[self.last_action_id]) + (self.alpha * reward) # 通常の指数移動平均で更新
 
     def _update_pi(self):
-       pi = self.pi[self.last_action_id]
        max_action_id = np.argmax(self.q_values)
-       if self.last_action_id == max_action_id:
-           update_amount = self.delta
-       else:
-           update_amount = ((-self.delta)/(len(self.action_list)-1))
+       for aidx, _ in enumerate(self.pi):
+           if aidx == max_action_id:
+               update_amount = self.delta
+           else:
+               update_amount = ((-self.delta)/(len(self.action_list)-1))
+           self.pi[aidx] = self.pi[aidx] + update_amount
+           if self.pi[aidx] > 1: self.pi[aidx] = 1
+           if self.pi[aidx] < 0: self.pi[aidx] = 0 
+       self.pi_history.append(self.pi[0])
 
-       return update_amount
