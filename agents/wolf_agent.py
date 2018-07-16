@@ -25,7 +25,7 @@ class Agent(metaclass=ABCMeta):
 
 class WoLFAgent(Agent):
     """
-        Policy hill-climbing algorithm(PHC)
+        Win or Learn Fast-PHC(WoLF-PHC)
         http://www.cs.cmu.edu/~mmv/papers/01ijcai-mike.pdf
     """
     def __init__(self, delta=0.0001, action_list=None, **kwargs):

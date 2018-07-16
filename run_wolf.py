@@ -17,15 +17,18 @@ if __name__ == '__main__':
     agents = []
     for idx in range(nb_agents):
         policy = NormalPolicy()
-        agent = WoLFAgent(alpha=0.1, policy=policy, action_list=np.arange(2))  # agentの設定
+        agent = WoLFAgent(alpha=0.1, policy=policy, action_list=np.arange(3))  # agentの設定
         agents.append(agent)
 
     game = SimpleGame(nb_steps=100000, agents=agents)
     game.run()
     for idx, agent in enumerate(agents):
         print("agent{}s average reward:{}".format(idx, np.mean(agent.rewards)))
-    plt.plot(np.arange(len(agents[0].pi_history)),agents[0].pi_history)
-    plt.ylabel("Probability of selecting Heads")
-    plt.xlabel("Step")
+    # plt.plot(np.arange(len(agents[0].pi_history)),agents[0].pi_history)
+    plt.plot(agents[0].pi_history, agents[1].pi_history)
+    plt.ylabel("Agent1's Probability of selecting Rock")
+    plt.xlabel("Agent2's Probability of selecting Rock")
+    # plt.xlabel("Step")
+    plt.xlim(0, 1)
     plt.ylim(0, 1)
     plt.show()

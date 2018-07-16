@@ -38,7 +38,7 @@ class PHCAgent(Agent):
         self.pi_history = [self.pi[0]]
 
     def _init_q_values(self):
-        q_values = {}
+        # q_values = {}
         q_values = np.repeat(0.0, len(self.action_list))
         return q_values
 
